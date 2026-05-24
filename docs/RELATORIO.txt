@@ -1,0 +1,300 @@
+================================================================================
+                      RELATORIO DO PROJETO 2
+           PANELINHAS EM UM GRUPO SOCIAL - TEORIA DOS GRAFOS
+                     Universidade Presbiteriana Mackenzie
+                                2026/1
+================================================================================
+
+GRUPO:
+- [NOME COMPLETO 1] - [RA]
+- [NOME COMPLETO 2] - [RA]
+- [NOME COMPLETO 3] - [RA]
+- [NOME COMPLETO 4] - [RA]
+- [NOME COMPLETO 5] - [RA]
+
+DATA DE ENTREGA: 29 de maio de 2026
+PROFESSOR: [NOME DO PROFESSOR]
+
+================================================================================
+1. INTRODUCAO
+================================================================================
+
+Este projeto implementa um sistema para analise de redes sociais modeladas como
+grafos nao-dirigidos. O objetivo e identificar "panelinhas" (cliques maximais
+com pelo menos 3 membros) e "elementos influentes" (membros que pertencem a
+duas ou mais panelinhas cuja intersecao contem apenas esse membro).
+
+A rede social implementada possui 30 participantes, cada um com nome e detalhes
+(curso e idade). As amizades sao representadas por arestas nao-dirigidas, e o
+grafo e armazenado usando lista de adjacencia (baseado no arquivo do professor).
+
+================================================================================
+2. ALGORITMOS IMPLEMENTADOS
+================================================================================
+
+2.1 ALGORITMO DE BRON-KERBOSCH COM PIVOTAMENTO
+
+Para encontrar todas as panelinhas (cliques maximais), usamos o algoritmo
+de Bron-Kerbosch com pivotamento.
+
+O algoritmo mantem tres conjuntos:
+- R: clique parcial sendo construido
+- P: vertices candidatos a expandir R
+- X: vertices ja processados (garante maximalidade)
+
+A cada chamada recursiva:
+1. Se P e X estao vazios, R e um clique maximal
+2. Se tamanho de R for >= 3, R e uma panelinha (salva no resultado)
+3. Escolhe pivo u em P uniao X que maximiza vizinhos em P
+4. Para cada v em P que nao e vizinho do pivo:
+   a) Chama recursivamente com R' = R + {v}, P' = P intersec N(v), X' = X intersec N(v)
+   b) Move v de P para X
+
+A escolha do pivo reduz o numero de chamadas recursivas, melhorando a
+eficiencia na pratica.
+
+2.2 DETECCAO DE ELEMENTOS INFLUENTES
+
+Um vertice v e influente se existem panelinhas A e B tais que:
+- v pertence a A e v pertence a B
+- A intersec B = {v}
+
+O algoritmo:
+1. Para cada vertice v, encontra todas as panelinhas que o contem
+2. Se v pertence a menos de 2 panelinhas, descarta
+3. Para cada par (A, B) de panelinhas contendo v:
+   a) Calcula a intersecao de A e B
+   b) Se a intersecao tem so 1 elemento (que e v), v e influente
+
+================================================================================
+3. ESTRUTURAS DE DADOS
+================================================================================
+
+3.1 TAD GRAFO (Grafo_2026-1.h/.c)
+
+Baseado diretamente no arquivo do professor, com adicao de nome e detalhe
+em cada vertice:
+
+typedef struct a {
+    int    vizinho;
+    struct a *prox;
+} Aresta;
+
+typedef struct v {
+    int  indice;
+    char nome[60];
+    char detalhe[120];
+    Aresta *prim;
+} Vertice;
+
+Funcoes implementadas:
+- criaGrafo/destroiGrafo: alocacao/liberacao
+- definirParticipante: atribui nome e detalhes a um vertice
+- acrescentaAresta: adiciona aresta nao-dirigida
+- existeAresta: verifica adjacencia percorrendo a lista
+- imprimeGrafo: mostra participantes e suas conexoes
+
+3.2 ESTRUTURAS PARA PANELINHAS (panelinhas.h/.c)
+
+typedef struct {
+    int membros[MAX_VERTICES];
+    int tamanho;
+} Panelinha;
+
+typedef struct {
+    Panelinha lista[MAX_PANELINHAS];
+    int qtd;
+} ListaPanelinhas;
+
+Funcoes implementadas:
+- encontrarPanelinhas: executa Bron-Kerbosch
+- exibirPanelinhas: lista todas as panelinhas encontradas
+- consultarPorMembro: panelinhas de um vertice especifico
+- consultarInfluentes: lista elementos influentes
+- maiorPanelinha: retorna a panelinha com mais membros
+
+================================================================================
+4. REDE SOCIAL IMPLEMENTADA
+================================================================================
+
+4.1 PARTICIPANTES (30)
+
+[ 0] Ana Clara              | Computacao, 20 anos
+[ 1] Bruno Henrique         | Engenharia Eletrica, 21 anos
+[ 2] Carlos Eduardo         | Computacao, 22 anos
+[ 3] Daniela Ferreira       | Matematica, 20 anos
+[ 4] Eduardo Santos         | Fisica, 23 anos
+[ 5] Fernanda Lima          | Quimica, 21 anos
+[ 6] Gabriel Oliveira       | Administracao, 22 anos
+[ 7] Helena Costa           | Medicina, 24 anos
+[ 8] Igor Matos             | Direito, 21 anos
+[ 9] Julia Carvalho         | Letras, 20 anos
+[10] Kevin Alves            | Arquitetura, 23 anos
+[11] Laura Rodrigues        | Psicologia, 22 anos
+[12] Marcos Pereira         | Economia, 24 anos
+[13] Natalia Souza          | Publicidade, 21 anos
+[14] Otavio Mendes          | Jornalismo, 22 anos
+[15] Patricia Gomes         | Pedagogia, 23 anos
+[16] Rafael Barbosa         | Historia, 20 anos
+[17] Sabrina Castro         | Filosofia, 21 anos
+[18] Thiago Ribeiro         | Sociologia, 22 anos
+[19] Ursula Freitas         | Biologia, 23 anos
+[20] Victor Moreira         | Educacao Fisica, 20 anos
+[21] Wanessa Dias           | Nutricao, 21 anos
+[22] Xavier Nunes           | Design, 22 anos
+[23] Yara Cavalcanti        | Moda, 24 anos
+[24] Zeca Pinto             | Musica, 21 anos
+[25] Alice Monteiro         | Cinema, 22 anos
+[26] Bernardo Farias        | Teatro, 23 anos
+[27] Carla Teixeira         | Danca, 20 anos
+[28] Diego Correia          | Artes Visuais, 21 anos
+[29] Elisa Vieira           | Fotografia, 22 anos
+
+4.2 PANELINHAS (12)
+
+1. {Ana Clara, Bruno Henrique, Carlos Eduardo, Daniela Ferreira} (tamanho 4)
+2. {Ana Clara, Eduardo Santos, Fernanda Lima} (tamanho 3)
+3. {Gabriel Oliveira, Helena Costa, Igor Matos, Julia Carvalho} (tamanho 4)
+4. {Gabriel Oliveira, Kevin Alves, Laura Rodrigues} (tamanho 3)
+5. {Marcos Pereira, Natalia Souza, Otavio Mendes} (tamanho 3)
+6. {Patricia Gomes, Rafael Barbosa, Sabrina Castro} (tamanho 3)
+7. {Natalia Souza, Patricia Gomes, Thiago Ribeiro} (tamanho 3)
+8. {Ursula Freitas, Victor Moreira, Wanessa Dias} (tamanho 3)
+9. {Xavier Nunes, Yara Cavalcanti, Zeca Pinto} (tamanho 3)
+10. {Ursula Freitas, Xavier Nunes, Alice Monteiro} (tamanho 3)
+11. {Alice Monteiro, Bernardo Farias, Carla Teixeira} (tamanho 3)
+12. {Carla Teixeira, Diego Correia, Elisa Vieira} (tamanho 3)
+
+4.3 AMIZADES EXTRAS (NAO FORMAM NOVAS PANELINHAS)
+
+Carlos Eduardo - Xavier Nunes
+Daniela Ferreira - Ursula Freitas
+Eduardo Santos - Victor Moreira
+Fernanda Lima - Yara Cavalcanti
+Helena Costa - Otavio Mendes
+Igor Matos - Rafael Barbosa
+Julia Carvalho - Thiago Ribeiro
+Kevin Alves - Bernardo Farias
+Laura Rodrigues - Diego Correia
+Marcos Pereira - Zeca Pinto
+Rafael Barbosa - Wanessa Dias
+Sabrina Castro - Elisa Vieira
+
+================================================================================
+5. RESULTADOS OBTIDOS
+================================================================================
+
+5.1 PANELINHAS ENCONTRADAS: 12
+
+5.2 ELEMENTOS INFLUENTES: 8
+
+1. Ana Clara (panelinhas 1 e 2)
+   - Panelinha 1: {Ana, Bruno, Carlos, Daniela}
+   - Panelinha 2: {Ana, Eduardo, Fernanda}
+   - Intersecao: {Ana} apenas
+
+2. Gabriel Oliveira (panelinhas 3 e 4)
+   - Panelinha 3: {Gabriel, Helena, Igor, Julia}
+   - Panelinha 4: {Gabriel, Kevin, Laura}
+   - Intersecao: {Gabriel} apenas
+
+3. Natalia Souza (panelinhas 5 e 7)
+   - Panelinha 5: {Marcos, Natalia, Otavio}
+   - Panelinha 7: {Natalia, Patricia, Thiago}
+   - Intersecao: {Natalia} apenas
+
+4. Patricia Gomes (panelinhas 6 e 7)
+   - Panelinha 6: {Patricia, Rafael, Sabrina}
+   - Panelinha 7: {Natalia, Patricia, Thiago}
+   - Intersecao: {Patricia} apenas
+
+5. Ursula Freitas (panelinhas 8 e 10)
+   - Panelinha 8: {Ursula, Victor, Wanessa}
+   - Panelinha 10: {Ursula, Xavier, Alice}
+   - Intersecao: {Ursula} apenas
+
+6. Xavier Nunes (panelinhas 9 e 10)
+   - Panelinha 9: {Xavier, Yara, Zeca}
+   - Panelinha 10: {Ursula, Xavier, Alice}
+   - Intersecao: {Xavier} apenas
+
+7. Alice Monteiro (panelinhas 10 e 11)
+   - Panelinha 10: {Ursula, Xavier, Alice}
+   - Panelinha 11: {Alice, Bernardo, Carla}
+   - Intersecao: {Alice} apenas
+
+8. Carla Teixeira (panelinhas 11 e 12)
+   - Panelinha 11: {Alice, Carla, Bernardo}
+   - Panelinha 12: {Carla, Diego, Elisa}
+   - Intersecao: {Carla} apenas
+
+5.3 MAIOR PANELINHA
+
+Tamanho: 4 membros
+Membros: {Ana Clara, Bruno Henrique, Carlos Eduardo, Daniela Ferreira}
+
+Existem duas panelinhas de tamanho 4 (1 e 3). A funcao maiorPanelinha()
+retorna a primeira encontrada.
+
+================================================================================
+6. DESEMPENHO
+================================================================================
+
+O algoritmo de Bron-Kerbosch funciona bem para o tamanho do nosso grafo
+(30 vertices). Testamos o programa e a execucao e instantanea.
+
+A busca de influentes percorre todos os pares de panelinhas de cada vertice,
+o que tambem e rapido dado que temos no maximo 12 panelinhas no total.
+
+================================================================================
+7. TESTES E VALIDACAO
+================================================================================
+
+Validamos manualmente os seguintes pontos:
+
+- Grafo possui 30 vertices (dentro do intervalo 25-35)
+- Todas as panelinhas tem >= 3 membros
+- Cada panelinha e clique completo (todo par e adjacente)
+- Cada panelinha e maximal (nao pode ser estendida)
+- Elementos influentes satisfazem a condicao de intersecao = {v}
+- Sem entrada do usuario (valores fixos no codigo)
+- Compila sem warnings com -ansi -Wall -pedantic
+
+================================================================================
+8. CONCLUSAO
+================================================================================
+
+O projeto implementa o que foi pedido no enunciado:
+
+- Grafo com 30 participantes (dentro de 25-35)
+- Sem entrada do usuario, valores fixos no codigo
+- Encontra as panelinhas corretamente (12 no total)
+- Consulta panelinhas por membro
+- Detecta os 8 elementos influentes
+- Identifica a maior panelinha (4 membros)
+- Compila sem warnings com -ansi -Wall -pedantic
+
+================================================================================
+9. REFERENCIAS
+================================================================================
+
+- Enunciado do Projeto 2, Teoria dos Grafos, Mackenzie 2026/1
+- Wikipedia: Bron-Kerbosch algorithm
+  https://en.wikipedia.org/wiki/Bron%E2%80%93Kerbosch_algorithm
+- Notas de aula da disciplina
+
+================================================================================
+ANEXO A - SAIDA COMPLETA DO PROGRAMA
+================================================================================
+
+[O conteudo completo da saida do programa deve ser inserido aqui]
+
+================================================================================
+ANEXO B - CODIGO-FONTE
+================================================================================
+
+[Os arquivos .c e .h devem ser anexados ao relatorio]
+
+================================================================================
+FIM DO RELATORIO
+================================================================================

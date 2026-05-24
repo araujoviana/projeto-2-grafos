@@ -1,104 +1,113 @@
-/*
- * Teoria dos Grafos - 2026/1
- * Implementacao base do TAD Grafo
- */
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include<memory.h>
 
 #include "Grafo_2026-1.h"
 
-Grafo *criarGrafo(int ordem)
-{
-    int i, j;
-    Grafo *g;
+/*
+ * Criacao de um grafo com ordem predefinida,
+ * inicialmente sem nenhuma aresta
+ */
+void criaGrafo(Vertice **G, int ordem) {
+    int i;
+    *G = (Vertice*) malloc(sizeof(Vertice) * ordem);
 
-    if (ordem < 1 || ordem > MAX_VERTICES) return NULL;
-
-    g = (Grafo *)malloc(sizeof(Grafo));
-    if (!g) return NULL;
-
-    g->ordem = ordem;
     for (i = 0; i < ordem; i++) {
-        for (j = 0; j < ordem; j++)
-            g->adj[i][j] = 0;
-        g->participantes[i].nome[0]    = '\0';
-        g->participantes[i].detalhe[0] = '\0';
+        (*G)[i].indice     = i;
+        (*G)[i].nome[0]    = '\0';
+        (*G)[i].detalhe[0] = '\0';
+        (*G)[i].prim       = NULL;
     }
-    return g;
 }
 
-void destruirGrafo(Grafo *g)
-{
-    if (g) free(g);
+/*
+ * Desaloca a memoria usada pelo grafo
+ */
+void destroiGrafo(Vertice **G, int ordem) {
+    int i;
+    Aresta *a, *n;
+
+    for (i = 0; i < ordem; i++) {
+        a = (*G)[i].prim;
+        while (a != NULL) {
+            n = a->prox;
+            free(a);
+            a = n;
+        }
+    }
+    free(*G);
 }
 
-void definirParticipante(Grafo *g, int v, const char *nome, const char *detalhe)
-{
-    if (!g || v < 0 || v >= g->ordem) return;
-    strncpy(g->participantes[v].nome,    nome,    NOME_MAX    - 1);
-    strncpy(g->participantes[v].detalhe, detalhe, DETALHE_MAX - 1);
-    g->participantes[v].nome[NOME_MAX       - 1] = '\0';
-    g->participantes[v].detalhe[DETALHE_MAX - 1] = '\0';
+/*
+ * Acrescenta aresta entre v1 e v2 (grafo nao-orientado)
+ */
+int acrescentaAresta(Vertice G[], int ordem, int v1, int v2) {
+    Aresta *A1, *A2;
+
+    if (v1 < 0 || v1 >= ordem)
+        return 0;
+    if (v2 < 0 || v2 >= ordem)
+        return 0;
+
+    A1 = (Aresta *) malloc(sizeof(Aresta));
+    A1->vizinho = v2;
+    A1->prox = G[v1].prim;
+    G[v1].prim = A1;
+
+    if (v1 == v2) return 1; /* laco */
+
+    A2 = (Aresta *) malloc(sizeof(Aresta));
+    A2->vizinho = v1;
+    A2->prox = G[v2].prim;
+    G[v2].prim = A2;
+
+    return 1;
 }
 
-void adicionarAresta(Grafo *g, int u, int v)
-{
-    if (!g || u < 0 || u >= g->ordem || v < 0 || v >= g->ordem || u == v) return;
-    g->adj[u][v] = 1;
-    g->adj[v][u] = 1;
+/* atribui nome e detalhes ao participante v */
+void definirParticipante(Vertice G[], int v, const char *nome, const char *det) {
+    strcpy(G[v].nome, nome);
+    strcpy(G[v].detalhe, det);
 }
 
-void removerAresta(Grafo *g, int u, int v)
-{
-    if (!g || u < 0 || u >= g->ordem || v < 0 || v >= g->ordem) return;
-    g->adj[u][v] = 0;
-    g->adj[v][u] = 0;
+/* retorna 1 se existe aresta entre v1 e v2, 0 caso contrario */
+int existeAresta(Vertice G[], int ordem, int v1, int v2) {
+    Aresta *aux;
+    if (v1 < 0 || v1 >= ordem || v2 < 0 || v2 >= ordem)
+        return 0;
+    aux = G[v1].prim;
+    while (aux != NULL) {
+        if (aux->vizinho == v2)
+            return 1;
+        aux = aux->prox;
+    }
+    return 0;
 }
 
-int existeAresta(Grafo *g, int u, int v)
-{
-    if (!g || u < 0 || u >= g->ordem || v < 0 || v >= g->ordem) return 0;
-    return g->adj[u][v];
-}
-
-int grauVertice(Grafo *g, int v)
-{
-    int i, grau = 0;
-    if (!g || v < 0 || v >= g->ordem) return -1;
-    for (i = 0; i < g->ordem; i++)
-        grau += g->adj[v][i];
-    return grau;
-}
-
-void exibirGrafo(Grafo *g)
-{
-    int i, j, primeiro;
-
-    if (!g) return;
+/*
+ * Imprime todos os participantes e suas amizades
+ */
+void imprimeGrafo(Vertice G[], int ordem) {
+    int i;
+    Aresta *aux;
 
     printf("=============================================================\n");
     printf("                      REDE SOCIAL\n");
     printf("=============================================================\n");
-    printf("Participantes (%d):\n\n", g->ordem);
+    printf("Participantes (%d):\n\n", ordem);
 
-    for (i = 0; i < g->ordem; i++) {
-        printf("  [%2d] %-22s | %s\n",
-               i,
-               g->participantes[i].nome,
-               g->participantes[i].detalhe);
-    }
+    for (i = 0; i < ordem; i++)
+        printf("  [%2d] %-22s | %s\n", i, G[i].nome, G[i].detalhe);
 
-    printf("\nAmizades (grau):\n\n");
-    for (i = 0; i < g->ordem; i++) {
-        printf("  %-22s (grau %2d) ->", g->participantes[i].nome, grauVertice(g, i));
-        primeiro = 1;
-        for (j = 0; j < g->ordem; j++) {
-            if (g->adj[i][j]) {
-                printf("%s %s", primeiro ? "" : ",", g->participantes[j].nome);
-                primeiro = 0;
-            }
+    printf("\nAmizades:\n\n");
+    for (i = 0; i < ordem; i++) {
+        printf("  %-22s ->", G[i].nome);
+        aux = G[i].prim;
+        while (aux != NULL) {
+            printf(" %s", G[aux->vizinho].nome);
+            if (aux->prox != NULL) printf(",");
+            aux = aux->prox;
         }
         printf("\n");
     }

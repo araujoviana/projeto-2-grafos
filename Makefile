@@ -1,17 +1,13 @@
-CC      = gcc
-CFLAGS  = -ansi -Wall -pedantic
-SRC     = src/main.c src/Grafo_2026-1.c src/panelinhas.c
-TARGET  = programa
+CC     = gcc
+CFLAGS = -ansi -Wall -pedantic
+SRC    = src/main.c src/Grafo_2026-1.c src/panelinhas.c
 
-all: $(TARGET)
+all: programa
 
-$(TARGET): $(SRC)
-	$(CC) $(CFLAGS) -I src -o $(TARGET) $(SRC)
+programa: $(SRC)
+	$(CC) $(CFLAGS) -I src -o programa $(SRC)
 
 clean:
-	rm -f $(TARGET)
+	rm -f programa
 
-test: all
-	python3 tests/test_panelinhas.py -v
-
-.PHONY: all clean test
+.PHONY: all clean

@@ -1,5 +1,4 @@
-# Claude Code guidance (local only)
-CLAUDE.md
+
 
 # Prerequisites
 *.d
@@ -53,6 +52,8 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+CLAUDE.md
+*.pdf
 
 # debug information files
 *.dwo

@@ -1,0 +1,119 @@
+=============================================================
+                      REDE SOCIAL
+=============================================================
+Participantes (30):
+
+  [ 0] Ana Clara              | Computacao, 20 anos
+  [ 1] Bruno Henrique         | Engenharia Eletrica, 21 anos
+  [ 2] Carlos Eduardo         | Computacao, 22 anos
+  [ 3] Daniela Ferreira       | Matematica, 20 anos
+  [ 4] Eduardo Santos         | Fisica, 23 anos
+  [ 5] Fernanda Lima          | Quimica, 21 anos
+  [ 6] Gabriel Oliveira       | Administracao, 22 anos
+  [ 7] Helena Costa           | Medicina, 24 anos
+  [ 8] Igor Matos             | Direito, 21 anos
+  [ 9] Julia Carvalho         | Letras, 20 anos
+  [10] Kevin Alves            | Arquitetura, 23 anos
+  [11] Laura Rodrigues        | Psicologia, 22 anos
+  [12] Marcos Pereira         | Economia, 24 anos
+  [13] Natalia Souza          | Publicidade, 21 anos
+  [14] Otavio Mendes          | Jornalismo, 22 anos
+  [15] Patricia Gomes         | Pedagogia, 23 anos
+  [16] Rafael Barbosa         | Historia, 20 anos
+  [17] Sabrina Castro         | Filosofia, 21 anos
+  [18] Thiago Ribeiro         | Sociologia, 22 anos
+  [19] Ursula Freitas         | Biologia, 23 anos
+  [20] Victor Moreira         | Educacao Fisica, 20 anos
+  [21] Wanessa Dias           | Nutricao, 21 anos
+  [22] Xavier Nunes           | Design, 22 anos
+  [23] Yara Cavalcanti        | Moda, 24 anos
+  [24] Zeca Pinto             | Musica, 21 anos
+  [25] Alice Monteiro         | Cinema, 22 anos
+  [26] Bernardo Farias        | Teatro, 23 anos
+  [27] Carla Teixeira         | Danca, 20 anos
+  [28] Diego Correia          | Artes Visuais, 21 anos
+  [29] Elisa Vieira           | Fotografia, 22 anos
+
+Amizades (grau):
+
+  Ana Clara              (grau  5) -> Bruno Henrique, Carlos Eduardo, Daniela Ferreira, Eduardo Santos, Fernanda Lima
+  Bruno Henrique         (grau  3) -> Ana Clara, Carlos Eduardo, Daniela Ferreira
+  Carlos Eduardo         (grau  4) -> Ana Clara, Bruno Henrique, Daniela Ferreira, Xavier Nunes
+  Daniela Ferreira       (grau  4) -> Ana Clara, Bruno Henrique, Carlos Eduardo, Ursula Freitas
+  Eduardo Santos         (grau  3) -> Ana Clara, Fernanda Lima, Victor Moreira
+  Fernanda Lima          (grau  3) -> Ana Clara, Eduardo Santos, Yara Cavalcanti
+  Gabriel Oliveira       (grau  5) -> Helena Costa, Igor Matos, Julia Carvalho, Kevin Alves, Laura Rodrigues
+  Helena Costa           (grau  4) -> Gabriel Oliveira, Igor Matos, Julia Carvalho, Otavio Mendes
+  Igor Matos             (grau  4) -> Gabriel Oliveira, Helena Costa, Julia Carvalho, Rafael Barbosa
+  Julia Carvalho         (grau  4) -> Gabriel Oliveira, Helena Costa, Igor Matos, Thiago Ribeiro
+  Kevin Alves            (grau  3) -> Gabriel Oliveira, Laura Rodrigues, Bernardo Farias
+  Laura Rodrigues        (grau  3) -> Gabriel Oliveira, Kevin Alves, Diego Correia
+  Marcos Pereira         (grau  3) -> Natalia Souza, Otavio Mendes, Zeca Pinto
+  Natalia Souza          (grau  4) -> Marcos Pereira, Otavio Mendes, Patricia Gomes, Thiago Ribeiro
+  Otavio Mendes          (grau  3) -> Helena Costa, Marcos Pereira, Natalia Souza
+  Patricia Gomes         (grau  4) -> Natalia Souza, Rafael Barbosa, Sabrina Castro, Thiago Ribeiro
+  Rafael Barbosa         (grau  4) -> Igor Matos, Patricia Gomes, Sabrina Castro, Wanessa Dias
+  Sabrina Castro         (grau  3) -> Patricia Gomes, Rafael Barbosa, Elisa Vieira
+  Thiago Ribeiro         (grau  3) -> Julia Carvalho, Natalia Souza, Patricia Gomes
+  Ursula Freitas         (grau  5) -> Daniela Ferreira, Victor Moreira, Wanessa Dias, Xavier Nunes, Alice Monteiro
+  Victor Moreira         (grau  3) -> Eduardo Santos, Ursula Freitas, Wanessa Dias
+  Wanessa Dias           (grau  3) -> Rafael Barbosa, Ursula Freitas, Victor Moreira
+  Xavier Nunes           (grau  5) -> Carlos Eduardo, Ursula Freitas, Yara Cavalcanti, Zeca Pinto, Alice Monteiro
+  Yara Cavalcanti        (grau  3) -> Fernanda Lima, Xavier Nunes, Zeca Pinto
+  Zeca Pinto             (grau  3) -> Marcos Pereira, Xavier Nunes, Yara Cavalcanti
+  Alice Monteiro         (grau  4) -> Ursula Freitas, Xavier Nunes, Bernardo Farias, Carla Teixeira
+  Bernardo Farias        (grau  3) -> Kevin Alves, Alice Monteiro, Carla Teixeira
+  Carla Teixeira         (grau  4) -> Alice Monteiro, Bernardo Farias, Diego Correia, Elisa Vieira
+  Diego Correia          (grau  3) -> Laura Rodrigues, Carla Teixeira, Elisa Vieira
+  Elisa Vieira           (grau  3) -> Sabrina Castro, Carla Teixeira, Diego Correia
+=============================================================
+
+=== Panelinhas (12 encontradas) ===
+
+  Panelinha  1 (tamanho 4): { Ana Clara, Bruno Henrique, Carlos Eduardo, Daniela Ferreira }
+  Panelinha  2 (tamanho 3): { Ana Clara, Eduardo Santos, Fernanda Lima }
+  Panelinha  3 (tamanho 4): { Gabriel Oliveira, Helena Costa, Igor Matos, Julia Carvalho }
+  Panelinha  4 (tamanho 3): { Gabriel Oliveira, Kevin Alves, Laura Rodrigues }
+  Panelinha  5 (tamanho 3): { Marcos Pereira, Natalia Souza, Otavio Mendes }
+  Panelinha  6 (tamanho 3): { Natalia Souza, Patricia Gomes, Thiago Ribeiro }
+  Panelinha  7 (tamanho 3): { Patricia Gomes, Rafael Barbosa, Sabrina Castro }
+  Panelinha  8 (tamanho 3): { Ursula Freitas, Alice Monteiro, Xavier Nunes }
+  Panelinha  9 (tamanho 3): { Ursula Freitas, Wanessa Dias, Victor Moreira }
+  Panelinha 10 (tamanho 3): { Xavier Nunes, Zeca Pinto, Yara Cavalcanti }
+  Panelinha 11 (tamanho 3): { Alice Monteiro, Carla Teixeira, Bernardo Farias }
+  Panelinha 12 (tamanho 3): { Carla Teixeira, Elisa Vieira, Diego Correia }
+
+=== Panelinhas de "Ana Clara" ===
+
+  1. { Ana Clara, Bruno Henrique, Carlos Eduardo, Daniela Ferreira }
+  2. { Ana Clara, Eduardo Santos, Fernanda Lima }
+
+=== Panelinhas de "Gabriel Oliveira" ===
+
+  1. { Gabriel Oliveira, Helena Costa, Igor Matos, Julia Carvalho }
+  2. { Gabriel Oliveira, Kevin Alves, Laura Rodrigues }
+
+=== Panelinhas de "Natalia Souza" ===
+
+  1. { Marcos Pereira, Natalia Souza, Otavio Mendes }
+  2. { Natalia Souza, Patricia Gomes, Thiago Ribeiro }
+
+=== Panelinhas de "Carla Teixeira" ===
+
+  1. { Alice Monteiro, Carla Teixeira, Bernardo Farias }
+  2. { Carla Teixeira, Elisa Vieira, Diego Correia }
+
+=== Elementos Influentes ===
+
+  - Ana Clara (panelinhas 1 e 2)
+  - Gabriel Oliveira (panelinhas 3 e 4)
+  - Natalia Souza (panelinhas 5 e 6)
+  - Patricia Gomes (panelinhas 6 e 7)
+  - Ursula Freitas (panelinhas 8 e 9)
+  - Xavier Nunes (panelinhas 8 e 10)
+  - Alice Monteiro (panelinhas 8 e 11)
+  - Carla Teixeira (panelinhas 11 e 12)
+
+=== Maior Panelinha (tamanho 4) ===
+
+  { Ana Clara, Bruno Henrique, Carlos Eduardo, Daniela Ferreira }

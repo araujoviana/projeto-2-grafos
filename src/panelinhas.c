@@ -1,10 +1,5 @@
 /*
- * Teoria dos Grafos - 2026/1
- * Algoritmo de Bron-Kerbosch com pivotamento para enumerar cliques maximais.
- *
- * Referencia:
- *   Bron, C.; Kerbosch, J. (1973). "Algorithm 457: Finding all cliques of an
- *   undirected graph". Communications of the ACM. 16 (9): 575-577.
+ * Funcoes para encontrar panelinhas (grupos fechados) na rede social.
  */
 
 #include <stdio.h>
@@ -12,11 +7,8 @@
 
 #include "panelinhas.h"
 
-/*
- * Escolhe o vertice pivô u em P U X que maximiza |N(u) ∩ P|.
- * Reduz o numero de chamadas recursivas ao excluir N(pivô) dos candidatos.
- */
-static int escolherPivo(Grafo *g, int *P, int pSz, int *X, int xSz)
+/* escolhe o pivo: o vertice com mais vizinhos em P */
+static int escolherPivo(Vertice G[], int ordem, int *P, int pSz, int *X, int xSz)
 {
     int i, j, conn, maxConn, pivo;
 
@@ -26,28 +18,24 @@ static int escolherPivo(Grafo *g, int *P, int pSz, int *X, int xSz)
     for (i = 0; i < pSz; i++) {
         conn = 0;
         for (j = 0; j < pSz; j++)
-            if (existeAresta(g, P[i], P[j])) conn++;
+            if (existeAresta(G, ordem, P[i], P[j])) conn++;
         if (conn > maxConn) { maxConn = conn; pivo = P[i]; }
     }
     for (i = 0; i < xSz; i++) {
         conn = 0;
         for (j = 0; j < pSz; j++)
-            if (existeAresta(g, X[i], P[j])) conn++;
+            if (existeAresta(G, ordem, X[i], P[j])) conn++;
         if (conn > maxConn) { maxConn = conn; pivo = X[i]; }
     }
     return pivo;
 }
 
 /*
- * BronKerbosch(R, P, X):
- *   se P e X vazios -> relata R como clique maximal
- *   pivo u = argmax_{v in P U X} |N(v) ∩ P|
- *   para cada v em P \ N(u):
- *       BronKerbosch(R U {v}, P ∩ N(v), X ∩ N(v))
- *       P = P \ {v}
- *       X = X U {v}
+ * funcao recursiva do Bron-Kerbosch
+ * R = grupo atual, P = candidatos, X = ja visitados
+ * quando P e X ficam vazios, R e um clique maximal (panelinha se tamanho >= 3)
  */
-static void bk(Grafo *g,
+static void bk(Vertice G[], int ordem,
                int *R, int rSz,
                int *P, int pSz,
                int *X, int xSz,
@@ -71,14 +59,12 @@ static void bk(Grafo *g,
     }
     if (pSz == 0) return;
 
-    pivo = escolherPivo(g, P, pSz, X, xSz);
+    pivo = escolherPivo(G, ordem, P, pSz, X, xSz);
 
-    /* Candidatos: P \ N(pivo) */
     nCand = 0;
     for (i = 0; i < pSz; i++)
-        if (!existeAresta(g, pivo, P[i])) candidatos[nCand++] = P[i];
+        if (!existeAresta(G, ordem, pivo, P[i])) candidatos[nCand++] = P[i];
 
-    /* Copias de trabalho de P e X (modificadas a cada iteracao) */
     curPSz = pSz; curXSz = xSz;
     for (i = 0; i < pSz; i++) curP[i] = P[i];
     for (i = 0; i < xSz; i++) curX[i] = X[i];
@@ -86,24 +72,20 @@ static void bk(Grafo *g,
     for (i = 0; i < nCand; i++) {
         v = candidatos[i];
 
-        /* newR = R U {v} */
         for (j = 0; j < rSz; j++) newR[j] = R[j];
         newR[rSz] = v;
         newRSz = rSz + 1;
 
-        /* newP = curP ∩ N(v) */
         newPSz = 0;
         for (j = 0; j < curPSz; j++)
-            if (existeAresta(g, v, curP[j])) newP[newPSz++] = curP[j];
+            if (existeAresta(G, ordem, v, curP[j])) newP[newPSz++] = curP[j];
 
-        /* newX = curX ∩ N(v) */
         newXSz = 0;
         for (j = 0; j < curXSz; j++)
-            if (existeAresta(g, v, curX[j])) newX[newXSz++] = curX[j];
+            if (existeAresta(G, ordem, v, curX[j])) newX[newXSz++] = curX[j];
 
-        bk(g, newR, newRSz, newP, newPSz, newX, newXSz, res);
+        bk(G, ordem, newR, newRSz, newP, newPSz, newX, newXSz, res);
 
-        /* Move v de curP para curX */
         for (j = 0; j < curPSz; j++) {
             if (curP[j] == v) { curP[j] = curP[--curPSz]; break; }
         }
@@ -111,37 +93,43 @@ static void bk(Grafo *g,
     }
 }
 
-void encontrarPanelinhas(Grafo *g, ListaPanelinhas *res)
+void encontrarPanelinhas(Vertice G[], int ordem, ListaPanelinhas *res)
 {
     int i;
     int P[MAX_VERTICES], X[MAX_VERTICES], R[MAX_VERTICES];
 
+    if (!G || !res) return;
+
     res->qtd = 0;
-    for (i = 0; i < g->ordem; i++) P[i] = i;
-    bk(g, R, 0, P, g->ordem, X, 0, res);
+    for (i = 0; i < ordem; i++) P[i] = i;
+    bk(G, ordem, R, 0, P, ordem, X, 0, res);
 }
 
-void exibirPanelinhas(Grafo *g, ListaPanelinhas *lp)
+void exibirPanelinhas(Vertice G[], ListaPanelinhas *lp)
 {
     int i, j;
+
+    if (!G || !lp) return;
 
     printf("\n=== Panelinhas (%d encontradas) ===\n\n", lp->qtd);
     for (i = 0; i < lp->qtd; i++) {
         printf("  Panelinha %2d (tamanho %d): { ", i + 1, lp->lista[i].tamanho);
         for (j = 0; j < lp->lista[i].tamanho; j++) {
             if (j) printf(", ");
-            printf("%s", g->participantes[lp->lista[i].membros[j]].nome);
+            printf("%s", G[lp->lista[i].membros[j]].nome);
         }
         printf(" }\n");
     }
 }
 
-void consultarPorMembro(Grafo *g, ListaPanelinhas *lp, int vertice)
+void consultarPorMembro(Vertice G[], ListaPanelinhas *lp, int vertice)
 {
     int i, j, achou, count;
 
+    if (!G || !lp) return;
+
     count = 0;
-    printf("\n=== Panelinhas de \"%s\" ===\n\n", g->participantes[vertice].nome);
+    printf("\n=== Panelinhas de \"%s\" ===\n\n", G[vertice].nome);
 
     for (i = 0; i < lp->qtd; i++) {
         achou = 0;
@@ -153,28 +141,28 @@ void consultarPorMembro(Grafo *g, ListaPanelinhas *lp, int vertice)
         printf("  %d. { ", count);
         for (j = 0; j < lp->lista[i].tamanho; j++) {
             if (j) printf(", ");
-            printf("%s", g->participantes[lp->lista[i].membros[j]].nome);
+            printf("%s", G[lp->lista[i].membros[j]].nome);
         }
         printf(" }\n");
     }
     if (!count) printf("  (nenhuma panelinha encontrada)\n");
 }
 
-/*
- * Um elemento v eh influente se existem panelinhas alpha e beta com
- * v em alpha, v em beta, e alpha intersec beta = {v}.
- */
-void consultarInfluentes(Grafo *g, ListaPanelinhas *lp)
+/* lista os influentes: participantes em 2+ panelinhas
+   onde a intersecao das panelinhas so contem esse participante */
+void consultarInfluentes(Vertice G[], int ordem, ListaPanelinhas *lp)
 {
-    int v, i, j, k, m, em_comum;
+    int v, i, j, k, m, em_comum, encontrou;
     int cliquesDeV[MAX_PANELINHAS], nCliques;
-    int encontrou, algum;
+    int algum;
     Panelinha *a, *b;
+
+    if (!G || !lp) return;
 
     printf("\n=== Elementos Influentes ===\n\n");
     algum = 0;
 
-    for (v = 0; v < g->ordem; v++) {
+    for (v = 0; v < ordem; v++) {
         nCliques = 0;
         for (i = 0; i < lp->qtd; i++) {
             for (j = 0; j < lp->lista[i].tamanho; j++) {
@@ -197,13 +185,15 @@ void consultarInfluentes(Grafo *g, ListaPanelinhas *lp)
                         if (a->membros[k] == b->membros[m]) em_comum++;
                     }
                 }
-                /* intersecao = {v} apenas */
-                if (em_comum == 1) encontrou = 1;
+                if (em_comum == 1) {
+                    encontrou = 1;
+                    algum = 1;
+                    printf("  - %s (panelinhas %d e %d)\n",
+                           G[v].nome,
+                           cliquesDeV[i] + 1,
+                           cliquesDeV[j] + 1);
+                }
             }
-        }
-        if (encontrou) {
-            printf("  - %s\n", g->participantes[v].nome);
-            algum = 1;
         }
     }
     if (!algum) printf("  (nenhum elemento influente encontrado)\n");
@@ -213,6 +203,8 @@ Panelinha *maiorPanelinha(ListaPanelinhas *lp)
 {
     int i;
     Panelinha *maior = NULL;
+
+    if (!lp) return NULL;
 
     for (i = 0; i < lp->qtd; i++) {
         if (!maior || lp->lista[i].tamanho > maior->tamanho)
