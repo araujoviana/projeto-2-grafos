@@ -1,6 +1,6 @@
 /*
  * Grupo:
- *   - Matheus Gabriel Viana Araujo - 10420444
+ *   - Matheus Gabriel Viana Araujo
  *   - [NOME COMPLETO 2] - [RA]
  *   - [NOME COMPLETO 3] - [RA]
  *   - [NOME COMPLETO 4] - [RA]
